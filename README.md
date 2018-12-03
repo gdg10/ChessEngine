@@ -1,5 +1,10 @@
-# ChessEngine
+# ChessEngine (a side project)
+Can I create a chess AI smart enough to defeat myself?
 
-requirements:
-1. Create a chess engine good enough to beat me (>1000 ELO)
-2. Create a 2D GUI interface to play against it 
+My chess stats: (https://www.chess.com/stats/daily/chess/g_baby21)
+
+ChessEngine contains:
+chess.py    ...chess, digitalized!
+gui.py      ...we ain't playing on the commandline
+img/        ...photos of a handmade Italian chess set given to me by my Grandmother. Used by gui.py.
+engine.py   ...a chess AI
