@@ -3,7 +3,7 @@ import os, pygame, chess, math
 from pygame.locals import *
 
 boardImage = 'img/chessboard.jpg'     #image of chessboard used for background
-gameSize = 600
+gameSize = 200
 
 def coorToSquare(coor):
   #for a set of coor, returns the sqr indices
@@ -41,7 +41,7 @@ def getRender(piece):
   if piece.render == None: #only render once then store
     image = piece.getImage()
     piece.render = pygame.image.load(image).convert_alpha()
-    piece.render = pygame.transform.scale(piece.render, (gameSize/16, 2*gameSize/16))
+    piece.render = pygame.transform.scale(piece.render, (int(gameSize/16), int(2*gameSize/16)))
   return piece.render
 
 def main():

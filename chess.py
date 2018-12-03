@@ -16,48 +16,110 @@ blackBishopImage = 'img/blackBishop.png'
 blackKnightImage = 'img/blackKnight.png'
 blackPawnImage = 'img/blackPawn.png'
 
+import math
+
 class Board:
 	def __init__(self):
 		self.render = None
 		w, h = 8, 8;
 		self.squares = [[None for x in range(w)] for y in range(h)] #creates 2d array and initializes with None
 
+	def getMoveVector(self, startSqr, endSqr):
+		return [endSqr[0]-startSqr[0],endSqr[1]-startSqr[1]]
+		
+	def getDistance(self, mV):
+		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
+		print(d)
+		return d
+		
 	def isClearPath(self, startSqr, endSqr): #BUG!
-		moveVector = [startSqr[0]-endSqr[0],startSqr[1]-endSqr[1]]
-		print("mv: ")
-		print(moveVector)
-		for x in range(moveVector[0]):
-			for y in range(moveVector[1]-1):
-				print(y)
-				print(str(startSqr[0]+x)+", " + str(strstartSqr[1]+y))
-				if self.getPiece((startSqr[0]+x,startSqr[1]+y))!= None:
-					return False
+		path = self.getPath(startSqr, endSqr)
+		print(path)
+		for x in range(len(path)):
+			if self.isEmptySquare(path[x]) == False:
+				return False
 		return True
 
+	def getPath(self, startSqr, endSqr):
+		moveVector = self.getMoveVector(startSqr, endSqr)
+		if moveVector[0] != 0:
+			xInc = int(moveVector[0]/abs(moveVector[0]))
+		else:
+			xInc = 0
+		if moveVector[1] != 0:
+			yInc = int(moveVector[1]/abs(moveVector[1]))
+		else:
+			yInc = 0
+			
+		path = []
+		newSqr = startSqr
+		while 1:
+			newSqr[0] = newSqr[0] + xInc
+			newSqr[1] = newSqr[1] + yInc
+			print(newSqr)
+			if newSqr == endSqr:
+				break
+			else:
+				temp = [0,0]
+				temp[0] = newSqr[0]
+				temp[1] = newSqr[1]
+				path.append(temp)
+		return path
+	
 	def getPiece(self, sqr):
-		return self.squares[sqr[1]][sqr[0]] #note that this is reversed
-
+		if sqr[0] >= 0 and sqr[0] <=7:
+			if sqr[1] >= 0 and sqr[1] <=7:
+				return self.squares[sqr[1]][sqr[0]] #note that this is reversed
+		else:
+			print("Not a square")
+			return None
+	
+	def isEmptySquare(self, sqr):
+		p = self.getPiece(sqr)
+		if p == None:
+			return True
+		else:
+			return False
+			
 	def setPiece(self, sqr, p):
 		self.squares[sqr[1]][sqr[0]] = p;
 
 	def movePiece(self, startSqr, endSqr):
 		p = self.getPiece(startSqr)
 		q = self.getPiece(endSqr)
+		
 		if p == None:
 			print("invalid move - no piece selected")
 			return None
-		elif p.isLegalMove(startSqr, endSqr) == True and self.isClearPath(startSqr,endSqr) == True:
-			if p != None and q == None:
-				self.setPiece(endSqr, p)
-				self.setPiece(startSqr, None)
-				print("valid move")
-			else:
-				if q.color == p.color:
-					print("invalid capture - you cannont capture your own peice")
+		elif p.isLegalMove(startSqr, endSqr) == True:
+			if p.kind == "B" or p.kind == "Q" or p.kind == "R":
+				if self.isClearPath(startSqr,endSqr) == False:
+					print("Invalid move - Cannot jump over pieces")
+					return False
 				else:
+					if p != None and q == None:
+						self.setPiece(endSqr, p)
+						self.setPiece(startSqr, None)
+						print("valid move")
+					else:
+						if q.color == p.color:
+							print("invalid capture - you cannont capture your own peice")
+						else:
+							self.setPiece(endSqr, p)
+							self.setPiece(startSqr, None)
+							print("valid capture")				
+			else:
+				if p != None and q == None:
 					self.setPiece(endSqr, p)
 					self.setPiece(startSqr, None)
-					print("valid capture")
+					print("valid move")
+				else:
+					if q.color == p.color:
+						print("invalid capture - you cannont capture your own peice")
+					else:
+						self.setPiece(endSqr, p)
+						self.setPiece(startSqr, None)
+						print("valid capture")
 		else:
 			print("invalid move: peice cannot move to that square")
 
@@ -131,6 +193,14 @@ class Piece:
 
 	def isLegalMove(self, startSqr, endSqr):
 		return True
+	
+	def getMoveVector(self, startSqr, endSqr):
+		return [endSqr[0]-startSqr[0],endSqr[1]-startSqr[1]]
+	
+	def getDistance(self, mV):
+		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
+		print(d)
+		return d
 
 class King(Piece):
 	def __init__(self, color):
@@ -141,26 +211,13 @@ class King(Piece):
 		self.blackImg = blackKingImage
 
 	def isLegalMove(self, startSqr,endSqr):
-		moveVector = [startSqr[0]-endSqr[0],startSqr[1]-endSqr[1]]
-		if moveVector == [1,0]:
-			return True
-		elif moveVector == [0,1]:
-			return True
-		elif moveVector == [1,1]:
-			return True
-		elif moveVector == [-1,0]:
-			return True
-		elif moveVector == [0,-1]:
-			return True
-		elif moveVector == [-1,-1]:
-			return True
-		elif moveVector == [1,-1]:
-			return True
-		elif moveVector == [-1,1]:
+		moveVector = self.getMoveVector(startSqr, endSqr)
+		distance = self.getDistance(moveVector)
+		if(distance == 1 or distance == math.sqrt(2)):
 			return True
 		else:
 			return False
-
+		
 class Queen(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
@@ -168,6 +225,17 @@ class Queen(Piece):
 		self.value = 8
 		self.whiteImg = whiteQueenImage
 		self.blackImg = blackQueenImage
+	
+	def isLegalMove(self, startSqr, endSqr):
+		moveVector = self.getMoveVector(startSqr, endSqr)
+		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
+			return True
+		elif(moveVector[0] != 0 and moveVector[1] == 0): 
+			return True
+		elif(moveVector[1] != 0 and moveVector[0] == 0):
+			return True
+		else:
+			return False
 
 class Pawn(Piece):
 	def __init__(self, color):
@@ -187,10 +255,10 @@ class Rook(Piece):
 		self.blackImg = blackRookImage
 
 	def isLegalMove(self, startSqr, endSqr):
-		moveVector = [startSqr[0]-endSqr[0],startSqr[1]-endSqr[1]]
+		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(moveVector[0] != 0 and moveVector[1] == 0): 
 			return True
-		if(moveVector[1] != 0 and moveVector[0] == 0):
+		elif(moveVector[1] != 0 and moveVector[0] == 0):
 			return True
 		else:
 			return False
@@ -202,6 +270,14 @@ class Knight(Piece):
 		self.value = 3
 		self.whiteImg = whiteKnightImage
 		self.blackImg = blackKnightImage
+		
+	def isLegalMove(self, startSqr,endSqr):
+		moveVector = self.getMoveVector(startSqr, endSqr)
+		distance = self.getDistance(moveVector)
+		if(distance == math.sqrt(5)):
+			return True
+		else:
+			return False
 
 class Bishop(Piece):
 	def __init__(self, color):
@@ -212,7 +288,7 @@ class Bishop(Piece):
 		self.blackImg = blackBishopImage
 
 	def isLegalMove(self, startSqr, endSqr):
-		moveVector = [startSqr[0]-endSqr[0],startSqr[1]-endSqr[1]]
+		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
 			return True
 		else:
