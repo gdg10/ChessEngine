@@ -15,7 +15,7 @@ def coorToSquare(coor):
 def squareToCoor(sqr):
   #for a given square, returns its top left coordinates
   coor = [0,0]
-  coor[0] = int(math.floor(sqr[0]*((gameSize)/8)))
+  coor[0] = int(math.floor(sqr[0]*((gameSize)/8))+(gameSize/32))
   coor[1] = int(math.floor(sqr[1]*((gameSize)/8)))
   return coor
 
@@ -50,6 +50,7 @@ def main():
 
   board = chess.Board()
   board.setupDefault()
+  print(board)
 
   screen = renderBoard(board, screen)
   screen = renderPieces(board, screen)
