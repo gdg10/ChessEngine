@@ -1,6 +1,6 @@
-# gSmart Chess Engine
-## (a side project)
-### Can I create a chess AI smart enough to defeat myself?
+# gSmart
+## Can I create a chess AI intellegent enough to defeat me?
+### a side project
 
 My chess stats: (https://www.chess.com/stats/daily/chess/g_baby21)
 
