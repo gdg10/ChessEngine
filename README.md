@@ -1,9 +1,10 @@
-# gSmart
-## a chess AI
+# gSmart (a chess A.I.)
 
-Can I create a python bot better at chess than I am? This repository contains an extensive side project answering that simple question. 
+Can I create a python bot better at chess than I am? 
+This repository contains an extensive side project answering that simple question. 
 
-I play chess at a modest 1000 elo rating (see my stats here: https://www.chess.com/stats/daily/chess/g_baby21)
+I play chess at a modest 900 elo rating (see my stats here: https://www.chess.com/stats/daily/chess/g_baby21)
+My aim is to create an AI that plays at an elo of 1000 or greater.
 
 gSmart is:
 - chess.py    ...chess, digitalized! The backend.
