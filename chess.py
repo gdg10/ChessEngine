@@ -17,6 +17,7 @@ blackKnightImage = 'img/blackKnight.png'
 blackPawnImage = 'img/blackPawn.png'
 
 import math
+import copy 
 
 class Board:
 	def __init__(self):
@@ -33,12 +34,16 @@ class Board:
 		return d
 		
 	def isClearPath(self, startSqr, endSqr): #BUG!
-		path = self.getPath(startSqr, endSqr)
-		print(path)
-		for x in range(len(path)):
-			if self.isEmptySquare(path[x]) == False:
-				return False
-		return True
+		p = self.getPiece(startSqr)
+		if p.kind == "K" or p.kind == "N":
+			return True
+		else:
+			path = self.getPath(startSqr, endSqr)
+			print(path)
+			for x in range(len(path)):
+				if self.isEmptySquare(path[x]) == False:
+					return False
+			return True
 
 	def getPath(self, startSqr, endSqr):
 		moveVector = self.getMoveVector(startSqr, endSqr)
@@ -82,46 +87,35 @@ class Board:
 			return False
 			
 	def setPiece(self, sqr, p):
+		print("Setting piece " + str(sqr))
 		self.squares[sqr[1]][sqr[0]] = p;
 
 	def movePiece(self, startSqr, endSqr):
+	
 		p = self.getPiece(startSqr)
 		q = self.getPiece(endSqr)
-		
-		if p == None:
-			print("invalid move - no piece selected")
-			return None
-		elif p.isLegalMove(startSqr, endSqr) == True:
-			if p.kind == "B" or p.kind == "Q" or p.kind == "R":
-				if self.isClearPath(startSqr,endSqr) == False:
-					print("Invalid move - Cannot jump over pieces")
-					return False
-				else:
-					if p != None and q == None:
-						self.setPiece(endSqr, p)
-						self.setPiece(startSqr, None)
+		s = copy.deepcopy(startSqr);
+		e = copy.deepcopy(endSqr);
+		if p != None:
+			if p.isLegalMove(startSqr, endSqr) == True:
+				if self.isClearPath(startSqr,endSqr) == True:
+					if q == None or q.color != p.color:
+						print(endSqr)
+						print(startSqr)
+						print(e)
+						print(s)
+						self.setPiece(e, p)
+						self.setPiece(s, None) # bug here. s to end square
 						print("valid move")
 					else:
-						if q.color == p.color:
-							print("invalid capture - you cannont capture your own peice")
-						else:
-							self.setPiece(endSqr, p)
-							self.setPiece(startSqr, None)
-							print("valid capture")				
-			else:
-				if p != None and q == None:
-					self.setPiece(endSqr, p)
-					self.setPiece(startSqr, None)
-					print("valid move")
+						print("invalid capture or move")
 				else:
-					if q.color == p.color:
-						print("invalid capture - you cannont capture your own peice")
-					else:
-						self.setPiece(endSqr, p)
-						self.setPiece(startSqr, None)
-						print("valid capture")
+					print("Invalid move - Cannot jump over pieces")	
+			else:
+				print("invalid move: peice cannot move to that square")
 		else:
-			print("invalid move: peice cannot move to that square")
+			print("invalid move - no piece selected")
+			
 
 	def setupDefault(self):
 		self.squares[0][0] = Rook("b")	#setup the black army
