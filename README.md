@@ -3,7 +3,7 @@
 Can I create a python bot better at chess than I am? 
 
 This repository contains an extensive side project answering that simple question. I call it: gSmart.
-I play chess at a modest 900 elo rating (see my stats here: https://www.chess.com/stats/daily/chess/g_baby21)
+I play blitz chess around a 900 elo rating (see my stats here: https://www.chess.com/stats/daily/chess/g_baby21)
 My aim is to create the gSmart A.I. such that it plays at an elo of 1000 or greater.
 
 gSmart is:
