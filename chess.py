@@ -24,7 +24,8 @@ class Board:
 		self.render = None
 		w, h = 8, 8;
 		self.squares = [[None for x in range(w)] for y in range(h)] #creates 2d array and initializes with None
-
+		self.turn = "w"
+		
 	def getMoveVector(self, startSqr, endSqr):
 		return [endSqr[0]-startSqr[0],endSqr[1]-startSqr[1]]
 		
@@ -44,6 +45,12 @@ class Board:
 				if self.isEmptySquare(path[x]) == False:
 					return False
 			return True
+	
+	def nextTurn(self):
+		if self.turn == 'w':
+			self.turn = 'b'
+		else:
+			self.turn = 'w'
 
 	def getPath(self, startSqr, endSqr):
 		moveVector = self.getMoveVector(startSqr, endSqr)
@@ -78,7 +85,7 @@ class Board:
 		else:
 			print("Not a square")
 			return None
-	
+		
 	def isEmptySquare(self, sqr):
 		p = self.getPiece(sqr)
 		if p == None:
@@ -91,32 +98,36 @@ class Board:
 		self.squares[sqr[1]][sqr[0]] = p;
 
 	def movePiece(self, startSqr, endSqr):
-	
-		p = self.getPiece(startSqr)
+		p = self.getPiece(startSqr)	
 		q = self.getPiece(endSqr)
-		s = copy.deepcopy(startSqr);
-		e = copy.deepcopy(endSqr);
-		if p != None:
-			if p.isLegalMove(startSqr, endSqr) == True:
-				if self.isClearPath(startSqr,endSqr) == True:
-					if q == None or q.color != p.color:
-						print(endSqr)
-						print(startSqr)
-						print(e)
-						print(s)
-						self.setPiece(e, p)
-						self.setPiece(s, None) # bug here. s to end square
-						print("valid move")
+		s = copy.deepcopy(startSqr);	#deep copy needed to avoid pointer errors in helper methods
+		e = copy.deepcopy(endSqr);		#deep copy needed to avoid pointer errors in helper methods
+		
+		pieceClicked = (p != None)
+		capture = (q != None and q.color != p.color)
+		
+		#validity check regular moves
+		if pieceClicked:
+			isTurn = (p.color == self.turn)
+			if isTurn:
+				if p.isLegalMove(startSqr, endSqr, capture):
+					if self.isClearPath(startSqr,endSqr):
+						if q == None or capture:
+							self.setPiece(e, p)
+							self.setPiece(s, None) 
+							self.nextTurn()
+							print("valid move")
+						else:
+							print("invalid capture or move")
 					else:
-						print("invalid capture or move")
+						print("Invalid move - Cannot jump over pieces")	
 				else:
-					print("Invalid move - Cannot jump over pieces")	
+					print("invalid move: peice cannot move to that square")
 			else:
-				print("invalid move: peice cannot move to that square")
+				print("invalid move - not your turn")
 		else:
 			print("invalid move - no piece selected")
 			
-
 	def setupDefault(self):
 		self.squares[0][0] = Rook("b")	#setup the black army
 		self.squares[0][1] = Knight("b")
@@ -185,7 +196,7 @@ class Piece:
 		else:
 			return self.blackImg
 
-	def isLegalMove(self, startSqr, endSqr):
+	def isLegalMove(self, startSqr, endSqr, capture):
 		return True
 	
 	def getMoveVector(self, startSqr, endSqr):
@@ -204,7 +215,7 @@ class King(Piece):
 		self.whiteImg = whiteKingImage
 		self.blackImg = blackKingImage
 
-	def isLegalMove(self, startSqr,endSqr):
+	def isLegalMove(self, startSqr,endSqr, capture):
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		distance = self.getDistance(moveVector)
 		if(distance == 1 or distance == math.sqrt(2)):
@@ -220,7 +231,7 @@ class Queen(Piece):
 		self.whiteImg = whiteQueenImage
 		self.blackImg = blackQueenImage
 	
-	def isLegalMove(self, startSqr, endSqr):
+	def isLegalMove(self, startSqr, endSqr, capture):
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
 			return True
@@ -238,7 +249,28 @@ class Pawn(Piece):
 		self.value = 1
 		self.whiteImg = whitePawnImage
 		self.blackImg = blackPawnImage
-
+		self.neverMoved = True
+	
+	def correctDirection(self, mV):
+		if self.color == 'b' and mV[1] > 0:
+			return True
+		elif self.color == 'w' and mV[1] < 0:
+			return True
+		else:
+			return False
+			
+	def isLegalMove(self, startSqr, endSqr, capture):
+		mV = self.getMoveVector(startSqr, endSqr)
+		d = self.getDistance(mV)
+		if(d == 1 and self.correctDirection(mV) == True):	#Pawn may move 1 square "forward"
+			return True
+		elif(d == 2 and self.correctDirection(mV) == True and self.neverMoved == True): #Pawn may move 2 squares "forward" if first turn
+			self.neverMoved = False
+			return True
+		elif(d == math.sqrt(2) and self.correctDirection(mV) and capture):
+			return True
+		else:
+			return False
 
 class Rook(Piece):
 	def __init__(self, color):
@@ -248,7 +280,7 @@ class Rook(Piece):
 		self.whiteImg = whiteRookImage
 		self.blackImg = blackRookImage
 
-	def isLegalMove(self, startSqr, endSqr):
+	def isLegalMove(self, startSqr, endSqr, capture):
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(moveVector[0] != 0 and moveVector[1] == 0): 
 			return True
@@ -265,7 +297,7 @@ class Knight(Piece):
 		self.whiteImg = whiteKnightImage
 		self.blackImg = blackKnightImage
 		
-	def isLegalMove(self, startSqr,endSqr):
+	def isLegalMove(self, startSqr,endSqr, capture):
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		distance = self.getDistance(moveVector)
 		if(distance == math.sqrt(5)):
@@ -281,7 +313,7 @@ class Bishop(Piece):
 		self.whiteImg = whiteBishopImage
 		self.blackImg = blackBishopImage
 
-	def isLegalMove(self, startSqr, endSqr):
+	def isLegalMove(self, startSqr, endSqr, capture):
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
 			return True
