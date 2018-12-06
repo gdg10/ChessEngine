@@ -2,22 +2,7 @@
 #be able to read in a position and write it out to a file. 
 #be able to print to the console
 #eventaul link to GUI
-
-whiteKingImage = 'img/whiteKing.png'
-whiteQueenImage = 'img/whiteQueen.png'
-whiteRookImage = 'img/whiteRook.png'
-whiteBishopImage = 'img/whiteBishop.png'
-whiteKnightImage = 'img/whiteKnight.png'
-whitePawnImage = 'img/whitePawn.png'
-blackKingImage = 'img/blackking.png'
-blackQueenImage = 'img/blackQueen.png'
-blackRookImage = 'img/blackRook.png'
-blackBishopImage = 'img/blackBishop.png' 
-blackKnightImage = 'img/blackKnight.png'
-blackPawnImage = 'img/blackPawn.png'
-
-import math
-import copy 
+import math, copy, piece
 
 class Board:
 	def __init__(self):
@@ -129,39 +114,40 @@ class Board:
 			print("invalid move - no piece selected")
 			
 	def setupDefault(self):
-		self.squares[0][0] = Rook("b")	#setup the black army
-		self.squares[0][1] = Knight("b")
-		self.squares[0][2] = Bishop("b")
-		self.squares[0][3] = Queen("b")
-		self.squares[0][4] = King("b")
-		self.squares[0][5] = Bishop("b")
-		self.squares[0][6] = Knight("b")
-		self.squares[0][7] = Rook("b")
-		self.squares[1][0] = Pawn("b")
-		self.squares[1][1] = Pawn("b")
-		self.squares[1][2] = Pawn("b")
-		self.squares[1][3] = Pawn("b")
-		self.squares[1][4] = Pawn("b")
-		self.squares[1][5] = Pawn("b")
-		self.squares[1][6] = Pawn("b")
-		self.squares[1][7] = Pawn("b")
 
-		self.squares[7][0] = Rook("w")	#setup the white army
-		self.squares[7][1] = Knight("w")
-		self.squares[7][2] = Bishop("w")
-		self.squares[7][3] = Queen("w")
-		self.squares[7][4] = King("w")
-		self.squares[7][5] = Bishop("w")
-		self.squares[7][6] = Knight("w")
-		self.squares[7][7] = Rook("w")
-		self.squares[6][0] = Pawn("w")
-		self.squares[6][1] = Pawn("w")
-		self.squares[6][2] = Pawn("w")
-		self.squares[6][3] = Pawn("w")
-		self.squares[6][4] = Pawn("w")
-		self.squares[6][5] = Pawn("w")
-		self.squares[6][6] = Pawn("w")
-		self.squares[6][7] = Pawn("w")
+		self.squares[0][0] = piece.Rook("b")	#setup the black army
+		self.squares[0][1] = piece.Knight("b")
+		self.squares[0][2] = piece.Bishop("b")
+		self.squares[0][3] = piece.Queen("b")
+		self.squares[0][4] = piece.King("b")
+		self.squares[0][5] = piece.Bishop("b")
+		self.squares[0][6] = piece.Knight("b")
+		self.squares[0][7] = piece.Rook("b")
+		self.squares[1][0] = piece.Pawn("b")
+		self.squares[1][1] = piece.Pawn("b")
+		self.squares[1][2] = piece.Pawn("b")
+		self.squares[1][3] = piece.Pawn("b")
+		self.squares[1][4] = piece.Pawn("b")
+		self.squares[1][5] = piece.Pawn("b")
+		self.squares[1][6] = piece.Pawn("b")
+		self.squares[1][7] = piece.Pawn("b")
+
+		self.squares[7][0] = piece.Rook("w")	#setup the white army
+		self.squares[7][1] = piece.Knight("w")
+		self.squares[7][2] = piece.Bishop("w")
+		self.squares[7][3] = piece.Queen("w")
+		self.squares[7][4] = piece.King("w")
+		self.squares[7][5] = piece.Bishop("w")
+		self.squares[7][6] = piece.Knight("w")
+		self.squares[7][7] = piece.Rook("w")
+		self.squares[6][0] = piece.Pawn("w")
+		self.squares[6][1] = piece.Pawn("w")
+		self.squares[6][2] = piece.Pawn("w")
+		self.squares[6][3] = piece.Pawn("w")
+		self.squares[6][4] = piece.Pawn("w")
+		self.squares[6][5] = piece.Pawn("w")
+		self.squares[6][6] = piece.Pawn("w")
+		self.squares[6][7] = piece.Pawn("w")
 
 	def writeToFile(self, fName):
 		fo = open(fName, "wb+")
@@ -181,141 +167,3 @@ class Board:
 			if x != 7:
 				boardStr = boardStr + '\n'
 		return boardStr
-
-class Piece:
-	def __init__(self, color):
-		self.render = None
-		self.color = color
-
-	def __str__(self):
-		return self.color + self.kind + "  "
-
-	def getImage(self):
-		if self.color == 'w':
-			return self.whiteImg
-		else:
-			return self.blackImg
-
-	def isLegalMove(self, startSqr, endSqr, capture):
-		return True
-	
-	def getMoveVector(self, startSqr, endSqr):
-		return [endSqr[0]-startSqr[0],endSqr[1]-startSqr[1]]
-	
-	def getDistance(self, mV):
-		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
-		print(d)
-		return d
-
-class King(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = 'K'
-		self.value = 20
-		self.whiteImg = whiteKingImage
-		self.blackImg = blackKingImage
-
-	def isLegalMove(self, startSqr,endSqr, capture):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		distance = self.getDistance(moveVector)
-		if(distance == 1 or distance == math.sqrt(2)):
-			return True
-		else:
-			return False
-		
-class Queen(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = 'Q'
-		self.value = 8
-		self.whiteImg = whiteQueenImage
-		self.blackImg = blackQueenImage
-	
-	def isLegalMove(self, startSqr, endSqr, capture):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
-			return True
-		elif(moveVector[0] != 0 and moveVector[1] == 0): 
-			return True
-		elif(moveVector[1] != 0 and moveVector[0] == 0):
-			return True
-		else:
-			return False
-
-class Pawn(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = ' '
-		self.value = 1
-		self.whiteImg = whitePawnImage
-		self.blackImg = blackPawnImage
-		self.neverMoved = True
-	
-	def correctDirection(self, mV):
-		if self.color == 'b' and mV[1] > 0:
-			return True
-		elif self.color == 'w' and mV[1] < 0:
-			return True
-		else:
-			return False
-			
-	def isLegalMove(self, startSqr, endSqr, capture):
-		mV = self.getMoveVector(startSqr, endSqr)
-		d = self.getDistance(mV)
-		if(d == 1 and self.correctDirection(mV) == True):	#Pawn may move 1 square "forward"
-			return True
-		elif(d == 2 and self.correctDirection(mV) == True and self.neverMoved == True): #Pawn may move 2 squares "forward" if first turn
-			self.neverMoved = False
-			return True
-		elif(d == math.sqrt(2) and self.correctDirection(mV) and capture):
-			return True
-		else:
-			return False
-
-class Rook(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = 'R'
-		self.value = 5
-		self.whiteImg = whiteRookImage
-		self.blackImg = blackRookImage
-
-	def isLegalMove(self, startSqr, endSqr, capture):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		if(moveVector[0] != 0 and moveVector[1] == 0): 
-			return True
-		elif(moveVector[1] != 0 and moveVector[0] == 0):
-			return True
-		else:
-			return False
-
-class Knight(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = 'N'
-		self.value = 3
-		self.whiteImg = whiteKnightImage
-		self.blackImg = blackKnightImage
-		
-	def isLegalMove(self, startSqr,endSqr, capture):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		distance = self.getDistance(moveVector)
-		if(distance == math.sqrt(5)):
-			return True
-		else:
-			return False
-
-class Bishop(Piece):
-	def __init__(self, color):
-		Piece.__init__(self, color)
-		self.kind = 'B'
-		self.value = 3
-		self.whiteImg = whiteBishopImage
-		self.blackImg = blackBishopImage
-
-	def isLegalMove(self, startSqr, endSqr, capture):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
-			return True
-		else:
-			return False

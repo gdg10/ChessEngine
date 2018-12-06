@@ -3,7 +3,7 @@ import os, pygame, chess, math
 from pygame.locals import *
 
 boardImage = 'img/chessboard.jpg'     #image of chessboard used for background
-gameSize = 300
+gameSize = 600
 gameMode = 1
 #gameMode = 1 --> human white v human black
 #gameMode = 2 --> human white v computer black 
@@ -82,7 +82,7 @@ def main():
 					screen = renderPieces(board, screen)
 					pygame.display.update()
 			elif gameMode == 2:
-				if board.turn == "w"
+				if board.turn == "w":
 					if event.type == MOUSEBUTTONDOWN:
 						print(event.pos)
 						startSqr = coorToSquare(event.pos)
