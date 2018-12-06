@@ -1,5 +1,5 @@
 #import everything
-import os, pygame, chess, math
+import os, pygame, board, math
 from pygame.locals import *
 
 boardImage = 'img/chessboard.jpg'     #image of chessboard used for background
@@ -52,12 +52,12 @@ def main():
 	pygame.init()
 	screen = pygame.display.set_mode((gameSize, gameSize))
 
-	board = chess.Board()
-	board.setupDefault()
-	print(board)
+	b = board.Board()
+	b.setupDefault()
+	print(b)
 
-	screen = renderBoard(board, screen)
-	screen = renderPieces(board, screen)
+	screen = renderBoard(b, screen)
+	screen = renderPieces(b, screen)
 	pygame.display.update()
 
 	startSqr = [0,0]
@@ -77,9 +77,9 @@ def main():
 					print(event.pos)
 					endSqr = coorToSquare(event.pos)
 					print(endSqr)
-					board.movePiece(startSqr, endSqr)
-					screen = renderBoard(board, screen)
-					screen = renderPieces(board, screen)
+					b.movePiece(startSqr, endSqr)
+					screen = renderBoard(b, screen)
+					screen = renderPieces(b, screen)
 					pygame.display.update()
 			elif gameMode == 2:
 				if board.turn == "w":
@@ -91,15 +91,15 @@ def main():
 						print(event.pos)
 						endSqr = coorToSquare(event.pos)
 						print(endSqr)
-						board.movePiece(startSqr, endSqr)
-						screen = renderBoard(board, screen)
-						screen = renderPieces(board, screen)
+						b.movePiece(startSqr, endSqr)
+						screen = renderBoard(b, screen)
+						screen = renderPieces(b, screen)
 						pygame.display.update()
 				else:
-					move = e.getMove(board)
+					move = e.getMove(b)
 					board.movePiece(move[0], move[1])
-					screen = renderBoard(board, screen)
-					screen = renderPieces(board, screen)
+					screen = renderBoard(b, screen)
+					screen = renderPieces(b, screen)
 					pygame.display.update()
 					
 if __name__ == '__main__': main()

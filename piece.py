@@ -1,3 +1,5 @@
+import math, copy, board
+
 whiteKingImage = 'img/whiteKing.png'
 whiteQueenImage = 'img/whiteQueen.png'
 whiteRookImage = 'img/whiteRook.png'
@@ -11,12 +13,11 @@ blackBishopImage = 'img/blackBishop.png'
 blackKnightImage = 'img/blackKnight.png'
 blackPawnImage = 'img/blackPawn.png'
 
-import math, copy, chess
-
 class Piece:
 	def __init__(self, color):
 		self.render = None
 		self.color = color
+		self.sqr = None
 
 	def __str__(self):
 		return self.color + self.kind + "  "
@@ -37,6 +38,9 @@ class Piece:
 		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
 		print(d)
 		return d
+		
+	def setSqr(self, sqr):
+		self.sqr = sqr
 
 class King(Piece):
 	def __init__(self, color):

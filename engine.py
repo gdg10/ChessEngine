@@ -1,4 +1,4 @@
-import chess, copy
+import board, copy
 class engine:
 	def getMove(self, board):
 		pieces = self.getPieces(board.turn, board)	#return a list of pieces that can be moved
@@ -17,11 +17,12 @@ class engine:
 		return pieces
 
 	def calcBestMove(piece):
+	
+		return bestMove
 
 class move:
 	def __init__(piece, startSqr, endSqr, weight):
 		self.piece = piece
-		self.startSqr = startSqr
 		self.endSqr = endSqr
 		self.weight = weight;
 
@@ -30,3 +31,4 @@ class move:
 			return self
 		else:
 			return move
+	
