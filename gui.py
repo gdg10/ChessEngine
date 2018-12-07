@@ -1,3 +1,8 @@
+# the graphic user interface
+# displays board
+# provides the user access to some board methods
+# also contains game loop
+
 #import everything
 import os, pygame, board, math
 from pygame.locals import *
@@ -32,13 +37,12 @@ def renderBoard(board, screen):
 	return screen
 
 def renderPieces(board, screen):
-	#pushes the pieces from the board object onto the screen
-	for x in range(8):
-		for y in range(8):
-			p = board.getPiece((x,y)) #get peice on square
-			if p != None:
-				render = getRender(p) #render an image of that piece
-				screen.blit(render, squareToCoor((x,y))) #stage
+	pl = board.getPieces(None);
+	print(pl)
+	for x in range(len(pl)):
+		p = pl[x]
+		render = getRender(p) #render an image of that piece
+		screen.blit(render, squareToCoor(p.sqr)) #stage
 	return screen
 
 def getRender(piece):

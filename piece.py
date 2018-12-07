@@ -1,3 +1,7 @@
+# contains the pieces of the chess set 
+# and how they may be moved
+
+
 import math, copy, board
 
 whiteKingImage = 'img/whiteKing.png'

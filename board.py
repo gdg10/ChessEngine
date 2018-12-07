@@ -1,72 +1,49 @@
+# an arrangement of pieces 
+# and methods to access or change that arrangement 
+# backend is a list
+
 import math, copy, piece
 
 class Board:
 	def __init__(self):
 		self.render = None
-		w, h = 8, 8;
-		self.squares = [[None for x in range(w)] for y in range(h)] #creates 2d array and initializes with None
 		self.turn = "w"
-	
-	def getMoveVector(self, startSqr, endSqr):
-		return [endSqr[0]-startSqr[0],endSqr[1]-startSqr[1]]
-		
-	def getDistance(self, mV):
-		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
-		print(d)
-		return d
-		
-	def isClearPath(self, startSqr, endSqr): #BUG!
-		p = self.getPiece(startSqr)
-		if p.kind == "K" or p.kind == "N":
-			return True
-		else:
-			path = self.getPath(startSqr, endSqr)
-			print(path)
-			for x in range(len(path)):
-				if self.isEmptySquare(path[x]) == False:
-					return False
-			return True
-	
+		self.pcsList = [];
+
 	def nextTurn(self):
 		if self.turn == 'w':
 			self.turn = 'b'
 		else:
 			self.turn = 'w'
 
-	def getPath(self, startSqr, endSqr):
-		moveVector = self.getMoveVector(startSqr, endSqr)
-		if moveVector[0] != 0:
-			xInc = int(moveVector[0]/abs(moveVector[0]))
-		else:
-			xInc = 0
-		if moveVector[1] != 0:
-			yInc = int(moveVector[1]/abs(moveVector[1]))
-		else:
-			yInc = 0
-			
-		path = []
-		newSqr = startSqr
-		while 1:
-			newSqr[0] = newSqr[0] + xInc
-			newSqr[1] = newSqr[1] + yInc
-			print(newSqr)
-			if newSqr == endSqr:
-				break
-			else:
-				temp = [0,0]
-				temp[0] = newSqr[0]
-				temp[1] = newSqr[1]
-				path.append(temp)
-		return path
-	
 	def getPiece(self, sqr):
+		# iterate through the current list of pieces and check their sqr attribute
+		# O(n) time where n is current number of Pieces in play
 		if sqr[0] >= 0 and sqr[0] <=7:
 			if sqr[1] >= 0 and sqr[1] <=7:
-				return self.squares[sqr[1]][sqr[0]] #note that this is reversed
+				for x in range(len(self.pcsList)):
+					if self.pcsList[x].sqr == sqr:
+						return self.pcsList[x]
+				print("Piece DNE")
+				return None;
 		else:
 			print("Not a square")
 			return None
-		
+
+	def getPieces(self, color):
+		# return the pieces of given color
+		# if color == None, return all pieces
+		# O(n) time where n is current number of Pieces in play
+		# O(1) if color == None
+		if color == None:
+			return self.pcsList
+		else:
+			l = []
+			for x in range(len(pcsList)):
+				if self.pcsList[x].color == color:
+					l.append(self.pcsList[x])
+			return l
+
 	def isEmptySquare(self, sqr):
 		p = self.getPiece(sqr)
 		if p == None:
@@ -76,76 +53,48 @@ class Board:
 			
 	def setPiece(self, sqr, p):
 		print("Setting piece " + str(sqr))
-		self.squares[sqr[1]][sqr[0]] = p;
-		if(p != None):
-			p.setSqr(sqr)
-
+		p.sqr = sqr;
+		return p
+	
 	def movePiece(self, startSqr, endSqr):
-		p = self.getPiece(startSqr)	
-		q = self.getPiece(endSqr)
-		s = copy.deepcopy(startSqr);	#deep copy needed to avoid pointer errors in helper methods
-		e = copy.deepcopy(endSqr);		#deep copy needed to avoid pointer errors in helper methods
 		
-		pieceClicked = (p != None)
-		capture = (q != None and q.color != p.color)
-		
-		#validity check regular moves
-		if pieceClicked:
-			isTurn = (p.color == self.turn)
-			if isTurn:
-				if p.isLegalMove(startSqr, endSqr, capture):
-					if self.isClearPath(startSqr,endSqr):
-						if q == None or capture:
-							self.setPiece(e, p)
-							self.setPiece(s, None) 
-							self.nextTurn()
-							print("valid move")
-						else:
-							print("invalid capture or move")
-					else:
-						print("Invalid move - Cannot jump over pieces")	
-				else:
-					print("invalid move: peice cannot move to that square")
-			else:
-				print("invalid move - not your turn")
-		else:
-			print("invalid move - no piece selected")
-			
+
 	def setupDefault(self):
-
-		self.setPiece([0,0], piece.Rook("b"))	#setup the black army
-		self.setPiece([1,0], piece.Knight("b"))
-		self.setPiece([2,0], piece.Bishop("b"))
-		self.setPiece([3,0], piece.Queen("b"))
-		self.setPiece([4,0], piece.King("b"))
-		self.setPiece([5,0], piece.Bishop("b"))
-		self.setPiece([6,0], piece.Knight("b"))
-		self.setPiece([7,0], piece.Rook("b"))
-		self.setPiece([0,1], piece.Pawn("b"))
-		self.setPiece([1,1], piece.Pawn("b"))
-		self.setPiece([2,1], piece.Pawn("b"))
-		self.setPiece([3,1], piece.Pawn("b"))
-		self.setPiece([4,1], piece.Pawn("b"))
-		self.setPiece([5,1], piece.Pawn("b"))
-		self.setPiece([6,1], piece.Pawn("b"))
-		self.setPiece([7,1], piece.Pawn("b"))
-
-		self.setPiece([0,7], piece.Rook("w"))	#setup the black army
-		self.setPiece([1,7], piece.Knight("w"))
-		self.setPiece([2,7], piece.Bishop("w"))
-		self.setPiece([3,7], piece.Queen("w"))
-		self.setPiece([4,7], piece.King("w"))
-		self.setPiece([5,7], piece.Bishop("w"))
-		self.setPiece([6,7], piece.Knight("w"))
-		self.setPiece([7,7], piece.Rook("w"))
-		self.setPiece([0,6], piece.Pawn("w"))
-		self.setPiece([1,6], piece.Pawn("w"))
-		self.setPiece([2,6], piece.Pawn("w"))
-		self.setPiece([3,6], piece.Pawn("w"))
-		self.setPiece([4,6], piece.Pawn("w"))
-		self.setPiece([5,6], piece.Pawn("w"))
-		self.setPiece([6,6], piece.Pawn("w"))
-		self.setPiece([7,6], piece.Pawn("w"))
+		#setup the black army
+		self.pcsList.append(self.setPiece([0,0], piece.Rook("b")))	
+		self.pcsList.append(self.setPiece([1,0], piece.Knight("b")))
+		self.pcsList.append(self.setPiece([2,0], piece.Bishop("b")))
+		self.pcsList.append(self.setPiece([3,0], piece.Queen("b")))
+		self.pcsList.append(self.setPiece([4,0], piece.King("b")))
+		self.pcsList.append(self.setPiece([5,0], piece.Bishop("b")))
+		self.pcsList.append(self.setPiece([6,0], piece.Knight("b")))
+		self.pcsList.append(self.setPiece([7,0], piece.Rook("b")))
+		self.pcsList.append(self.setPiece([0,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([1,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([2,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([3,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([4,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([5,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([6,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([7,1], piece.Pawn("b")))
+		
+		#setup the black army
+		self.pcsList.append(self.setPiece([0,7], piece.Rook("w")))	
+		self.pcsList.append(self.setPiece([1,7], piece.Knight("w")))
+		self.pcsList.append(self.setPiece([2,7], piece.Bishop("w")))
+		self.pcsList.append(self.setPiece([3,7], piece.Queen("w")))
+		self.pcsList.append(self.setPiece([4,7], piece.King("w")))
+		self.pcsList.append(self.setPiece([5,7], piece.Bishop("w")))
+		self.pcsList.append(self.setPiece([6,7], piece.Knight("w")))
+		self.pcsList.append(self.setPiece([7,7], piece.Rook("w")))
+		self.pcsList.append(self.setPiece([0,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([1,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([2,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([3,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([4,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([5,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([6,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([7,6], piece.Pawn("w")))
 
 	def writeToFile(self, fName):
 		fo = open(fName, "wb+")
@@ -161,7 +110,7 @@ class Board:
 		boardStr = ''
 		for x in range(8):
 			for y in range(8):
-				boardStr = boardStr + self.squares[x][y].__str__() + ' '
+				boardStr = boardStr + self.getPiece([y,x]).__str__() + ' '
 			if x != 7:
 				boardStr = boardStr + '\n'
 		return boardStr
