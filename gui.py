@@ -4,7 +4,7 @@
 # also contains game loop
 
 #import everything
-import os, pygame, board, math
+import os, pygame, board, math, engine
 from pygame.locals import *
 
 boardImage = 'img/chessboard.jpg'     #image of chessboard used for background
@@ -57,8 +57,8 @@ def main():
 	screen = pygame.display.set_mode((gameSize, gameSize))
 
 	b = board.Board()
-	b.setupDefault()
-	print(b)
+	#b.setupDefault()
+	b.setupCheckmate()
 
 	screen = renderBoard(b, screen)
 	screen = renderPieces(b, screen)
@@ -67,24 +67,31 @@ def main():
 	startSqr = [0,0]
 	endSqr = [0,0]
 
-	while 1:
+	e = engine.engine()
+
+	checkmate = False
+	while checkmate == False:
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				return
-
 			if gameMode == 1:
 				if event.type == MOUSEBUTTONDOWN:
-					print(event.pos)
 					startSqr = coorToSquare(event.pos)
-					print(startSqr)
 				elif event.type == MOUSEBUTTONUP:
-					print(event.pos)
 					endSqr = coorToSquare(event.pos)
-					print(endSqr)
-					b.movePiece(startSqr, endSqr)
-					screen = renderBoard(b, screen)
-					screen = renderPieces(b, screen)
-					pygame.display.update()
+					success = b.movePiece(e, startSqr, endSqr)
+					if success:
+						screen = renderBoard(b, screen)
+						screen = renderPieces(b, screen)
+						pygame.display.update()
+
+						print("Checking if " + e.getOppositeColor(b.turn) + " is checkmated")
+						if e.isCheckmate(b):
+							print(b.turn + " wins")
+							checkmate = True
+						else:
+							b.nextTurn()
+
 			elif gameMode == 2:
 				if board.turn == "w":
 					if event.type == MOUSEBUTTONDOWN:

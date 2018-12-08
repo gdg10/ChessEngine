@@ -2,7 +2,7 @@
 # and methods to access or change that arrangement 
 # backend is a list
 
-import math, copy, piece
+import math, copy, piece, engine
 
 class Board:
 	def __init__(self):
@@ -30,6 +30,13 @@ class Board:
 			print("Not a square")
 			return None
 
+	def getPieceByKind(self, kind, color):
+		for x in range(len(self.pcsList)):
+			p = self.pcsList[x] 
+			if p.color == color and p.kind == kind:
+				return p
+		return None
+
 	def getPieces(self, color):
 		# return the pieces of given color
 		# if color == None, return all pieces
@@ -39,7 +46,7 @@ class Board:
 			return self.pcsList
 		else:
 			l = []
-			for x in range(len(pcsList)):
+			for x in range(len(self.pcsList)):
 				if self.pcsList[x].color == color:
 					l.append(self.pcsList[x])
 			return l
@@ -50,14 +57,28 @@ class Board:
 			return True
 		else:
 			return False
-			
+	
+	def movePiece(self, engine, startSqr, endSqr):
+		p = self.getPiece(startSqr)
+		print("moving " + p.__str__() + " to " + str(endSqr))
+		q = self.getPiece(endSqr)
+
+		if engine.isLegalMove(self, startSqr, endSqr):
+			if engine.isCapture(p, q):
+				self.removePiece(q);
+			self.setPiece(endSqr, p)
+			return True
+		else:
+			return False
+
 	def setPiece(self, sqr, p):
 		print("Setting piece " + str(sqr))
 		p.sqr = sqr;
 		return p
 	
-	def movePiece(self, startSqr, endSqr):
-		
+	def removePiece(self, p):
+		print("Capturing " + p.__str__())
+		self.pcsList.remove(p)
 
 	def setupDefault(self):
 		#setup the black army
@@ -78,7 +99,7 @@ class Board:
 		self.pcsList.append(self.setPiece([6,1], piece.Pawn("b")))
 		self.pcsList.append(self.setPiece([7,1], piece.Pawn("b")))
 		
-		#setup the black army
+		#setup the white army
 		self.pcsList.append(self.setPiece([0,7], piece.Rook("w")))	
 		self.pcsList.append(self.setPiece([1,7], piece.Knight("w")))
 		self.pcsList.append(self.setPiece([2,7], piece.Bishop("w")))
@@ -95,6 +116,16 @@ class Board:
 		self.pcsList.append(self.setPiece([5,6], piece.Pawn("w")))
 		self.pcsList.append(self.setPiece([6,6], piece.Pawn("w")))
 		self.pcsList.append(self.setPiece([7,6], piece.Pawn("w")))
+
+	def setupCheckmate(self):
+		#setup the black army
+		self.pcsList.append(self.setPiece([0,0], piece.Rook("b")))	
+		self.pcsList.append(self.setPiece([4,0], piece.King("b")))
+		self.pcsList.append(self.setPiece([1,0], piece.Rook("b")))
+		
+		#setup the white army
+		self.pcsList.append(self.setPiece([7,7], piece.King("w")))
+
 
 	def writeToFile(self, fName):
 		fo = open(fName, "wb+")
