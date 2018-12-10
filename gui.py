@@ -4,12 +4,12 @@
 # also contains game loop
 
 #import everything
-import os, pygame, board, math, engine
+import os, pygame, board, math, engine, sys, gSmart
 from pygame.locals import *
 
 boardImage = 'img/chessboard.jpg'     #image of chessboard used for background
 gameSize = 600
-gameMode = 1
+gameMode = 2
 #gameMode = 1 --> human white v human black
 #gameMode = 2 --> human white v computer black 
 #gameMode = 3 --> computer white v computer black
@@ -68,13 +68,17 @@ def main():
 	endSqr = [0,0]
 
 	e = engine.engine()
+	g = gSmart.gSmart()
 
+	size = sys.getsizeof(board)
+	print(size)
+	print(size/16)
 	checkmate = False
 	while checkmate == False:
 		for event in pygame.event.get():
 			if event.type == QUIT:
 				return
-			if gameMode == 1:
+			if gameMode == 1 or gameMode ==2:
 				if event.type == MOUSEBUTTONDOWN:
 					startSqr = coorToSquare(event.pos)
 				elif event.type == MOUSEBUTTONUP:
@@ -90,27 +94,21 @@ def main():
 							print(b.turn + " wins")
 							checkmate = True
 						else:
+							g.evaluatePosition(b)
 							b.nextTurn()
+							if gameMode ==2:
+								move = g.getNextMove(b)
+								print("m: " + str(move))
+								b.movePiece(e, move[1][0], move[1][1])
+								screen = renderBoard(b, screen)
+								screen = renderPieces(b, screen)
+								pygame.display.update()
+								print("Checking if " + e.getOppositeColor(b.turn) + " is checkmated")
+								if e.isCheckmate(b):
+									print(b.turn + " wins")
+									checkmate = True
+								else:
+									g.evaluatePosition(b)
+									b.nextTurn()
 
-			elif gameMode == 2:
-				if board.turn == "w":
-					if event.type == MOUSEBUTTONDOWN:
-						print(event.pos)
-						startSqr = coorToSquare(event.pos)
-						print(startSqr)
-					elif event.type == MOUSEBUTTONUP:
-						print(event.pos)
-						endSqr = coorToSquare(event.pos)
-						print(endSqr)
-						b.movePiece(startSqr, endSqr)
-						screen = renderBoard(b, screen)
-						screen = renderPieces(b, screen)
-						pygame.display.update()
-				else:
-					move = e.getMove(b)
-					board.movePiece(move[0], move[1])
-					screen = renderBoard(b, screen)
-					screen = renderPieces(b, screen)
-					pygame.display.update()
-					
 if __name__ == '__main__': main()

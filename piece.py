@@ -20,7 +20,6 @@ blackPawnImage = 'img/blackPawn.png'
 
 # Move render to gui class to save space in engine calculations
 
-
 class Piece:
 	def __init__(self, color):
 		self.render = None
@@ -44,7 +43,7 @@ class Piece:
 	
 	def getDistance(self, mV):
 		d = math.sqrt(mV[0]*mV[0] + mV[1]*mV[1])
-		#print(d)
+		##print(d)
 		return d
 		
 	def setSqr(self, sqr):
@@ -54,49 +53,49 @@ class King(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
 		self.kind = 'K'
-		self.value = 20
+		self.value = 0
 		self.whiteImg = whiteKingImage
 		self.blackImg = blackKingImage
 
 	def isLegalMove(self, startSqr,endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		distance = self.getDistance(moveVector)
 		if(distance == 1 or distance == math.sqrt(2)):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False
 		
 class Queen(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
 		self.kind = 'Q'
-		self.value = 8
+		self.value = 9
 		self.whiteImg = whiteQueenImage
 		self.blackImg = blackQueenImage
 	
 	def isLegalMove(self, startSqr, endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move") 
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move") 
 			return True
 		elif(moveVector[0] != 0 and moveVector[1] == 0): 
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		elif(moveVector[1] != 0 and moveVector[0] == 0):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False
 
 class Pawn(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
-		self.kind = ' '
+		self.kind = 'p'
 		self.value = 1
 		self.whiteImg = whitePawnImage
 		self.blackImg = blackPawnImage
@@ -108,25 +107,25 @@ class Pawn(Piece):
 		elif self.color == 'w' and mV[1] < 0:
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			##print(self.__str__() + " cannot have movevector: " + str(mV))
 			return False
 			
 	def isLegalMove(self, startSqr, endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		mV = self.getMoveVector(startSqr, endSqr)
 		d = self.getDistance(mV)
 		if(d == 1 and self.correctDirection(mV) == True):	#Pawn may move 1 square "forward"
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		elif(d == 2 and self.correctDirection(mV) == True and self.neverMoved == True): #Pawn may move 2 squares "forward" if first turn
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			self.neverMoved = False
 			return True
 		elif(d == math.sqrt(2) and self.correctDirection(mV) and capture):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False
 
 class Rook(Piece):
@@ -138,16 +137,16 @@ class Rook(Piece):
 		self.blackImg = blackRookImage
 
 	def isLegalMove(self, startSqr, endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(moveVector[0] != 0 and moveVector[1] == 0): 
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		elif(moveVector[1] != 0 and moveVector[0] == 0):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False
 
 class Knight(Piece):
@@ -159,14 +158,14 @@ class Knight(Piece):
 		self.blackImg = blackKnightImage
 		
 	def isLegalMove(self, startSqr,endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		distance = self.getDistance(moveVector)
 		if(distance == math.sqrt(5)):
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False
 
 class Bishop(Piece):
@@ -178,11 +177,11 @@ class Bishop(Piece):
 		self.blackImg = blackBishopImage
 
 	def isLegalMove(self, startSqr, endSqr, capture):
-		print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
+		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		moveVector = self.getMoveVector(startSqr, endSqr)
 		if(abs(moveVector[0]) == abs(moveVector[1]) and moveVector != [0,0]): 
-			print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
 		else:
-			print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
+			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
 			return False

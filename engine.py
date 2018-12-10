@@ -16,31 +16,31 @@ class engine:
 		# if the king is not in check, its not in checkmate
 		k = board.getPieceByKind("K", checkColor)
 		if self.isCheck(board, k) == False:
-			print("no checkmate")
+			# print("no checkmate")
 			return False		
 		else:
 			# if the king is in check, determine if it can get out of it
 			pcs = board.getPieces(checkColor)
 			for p in pcs:
-				print("checking if " + p.__str__() + " can move to prevent checkmate")
+				# print("checking if " + p.__str__() + " can move to prevent checkmate")
 				for x in range(8):							
 					for y in range(8):						# for each peice in your army
 						sqr = [x, y]
-						print("considering a move to: " + str(sqr))
+						# print("considering a move to: " + str(sqr))
 						b = copy.deepcopy(board)					# copy the board
 						b.nextTurn()
 						success = b.movePiece(self, p.sqr, sqr)		# attempt move
 						k = b.getPieceByKind("K", checkColor)
 						if success:
-							print("legal move...")
+							# print("legal move...")
 							if self.isCheck(b, k) == False:
-								print("moving " + p.__str__() + " to " + str(sqr) + " can prevent checkmate")
+								# print("moving " + p.__str__() + " to " + str(sqr) + " can prevent checkmate")
 								return False
-							else:
-								print("moving " + p.__str__() + "to " + str(sqr) + " cannot prevent checkmate")
-						else:
-							print("illegal move")
-			print("King is in checkmate")
+							#else:
+								#print("moving " + p.__str__() + "to " + str(sqr) + " cannot prevent checkmate")
+						#else:
+							#print("illegal move")
+			# print("King is in checkmate")
 			return True
 
 	#def getPosTree(n): 
@@ -51,13 +51,13 @@ class engine:
 
 	def isCheck(self, board, p):
 		# you're in check if your king is threatened
-		print("Checking if " + p.__str__() + " is in check")
+		# print("Checking if " + p.__str__() + " is in check")
 		check = self.isThreatened(board, p)
 		
-		if check == False:
-			print(p.__str__() + " is not in check")	
-		else:
-			print(p.__str__() + " is in check")	
+		#if check == False:
+			# print(p.__str__() + " is not in check")	
+		#else:
+			# print(p.__str__() + " is in check")	
 		return check
 
 	def getOppositeColor(self, color):
@@ -68,27 +68,41 @@ class engine:
 		return c
 
 	def isThreatened(self, board, p):
-		# a piece is threatened if any peice from the opposing army can legal move to its square
-		print("Checking if " + p.__str__() + " is threatened")
+		# a piece is threatened if any peice from the opposing army can legally move to its square
+		# print("Checking if " + p.__str__() + " is threatened")
 		pcs = board.getPieces(self.getOppositeColor(p.color))
 		for q in pcs:
 			if self.isThreatening(board, q, p) == True:
-				print(q.__str__() + " is threatening " + p.__str__())
+				# print(q.__str__() + " is threatening " + p.__str__())
 				return True
 		return False
 
 	def isThreatening(self, board, p, q):
-		print("checking if " + p.__str__() + " is threatening " + q.__str__())
+		# print("checking if " + p.__str__() + " is threatening " + q.__str__())
 		legal = p.isLegalMove(p.sqr, q.sqr, self.isCapture(p, q))
 		clear = False
 		if legal:
 			clear = self.isClearPath(board, p, p.sqr, q.sqr)
 		
 		threatening = (legal and clear)
-		if threatening == True:
-			print(p.__str__() + " is threatening " + q.__str__())
-		else:
-			print(p.__str__() + " is not threatening " + q.__str__())
+		#if threatening == True:
+			# print(p.__str__() + " is threatening " + q.__str__())
+		#else:
+			# print(p.__str__() + " is not threatening " + q.__str__())
+		return threatening
+
+	def isThreateningSqr(self, board, p, sqr):
+		# print("checking if " + p.__str__() + " is threatening " + str(sqr))
+		legal = p.isLegalMove(p.sqr, sqr, self.isCapture(p, board.getPiece(sqr)))
+		clear = False
+		if legal:
+			clear = self.isClearPath(board, p, p.sqr, sqr)
+		
+		threatening = (legal and clear)
+		#if threatening == True:
+			# print(p.__str__() + " is threatening " + str(sqr))
+		#else:
+			# print(p.__str__() + " is not threatening " + str(sqr))
 		return threatening
 
 	def isCapture(self, p, q):
@@ -99,12 +113,12 @@ class engine:
 		
 		pieceClicked = (p != None)
 		if pieceClicked == False:
-			print("invalid move - no piece selected")
+			# print("invalid move - no piece selected")
 			return False
 		
 		isTurn = (p.color == board.turn)
 		if isTurn == False:
-			print("invalid move - not your turn")
+			# print("invalid move - not your turn")
 			return False
 
 		q = board.getPiece(endSqr)		#piece on destination sqr if one
@@ -112,33 +126,33 @@ class engine:
 		if p.isLegalMove(startSqr, endSqr, capture):
 			if self.isClearPath(board, p, startSqr, endSqr):
 				
-				print("Checking that move doesnt put King in check...")
+				# print("Checking that " + board.turn + "'s move doesnt put " + board.turn + " King in check...")
 				b = copy.deepcopy(board)
-				k = b.getPieceByKind("K", b.turn)
-				kq = b.getPiece(endSqr)
+				temp = b.getPiece(startSqr)
 				if capture:
+					kq = b.getPiece(endSqr)
 					b.removePiece(kq);
-				b.setPiece(endSqr, k)
-				print(k.__str__())
-				check = self.isCheck(b, k)
+				b.setPiece(endSqr, temp)
+				# print(temp.__str__())
+				check = self.isCheck(b, b.getPieceByKind("K", b.turn))
 
 				if check == False:
 					if q == None:
-						print("valid move")
+						# print("valid move")
 						return True;
 					elif capture:
-						print("valid capture")
+						# print("valid capture")
 						return True;
 					else:
-						print("invalid move or captures")
+						# print("invalid move or captures")
 						return False
-				else:
-					print("invalid move - would result in check")
+				#else:
+					# print("invalid move - would result in check")
 			else:
-				print("invalid move - Cannot jump over pieces")	
 				return False
+				#print("invalid move - Cannot jump over pieces")	
 		else:
-			print("invalid move - peice cannot move to that square")
+			# print("invalid move - peice cannot move to that square")
 			return False
 			
 	
@@ -153,7 +167,7 @@ class engine:
 
 		s = copy.deepcopy(startSqr);
 		e = copy.deepcopy(endSqr);
-		print("getting path between " + str(startSqr) +" and " + str(endSqr))
+		# print("getting path between " + str(startSqr) +" and " + str(endSqr))
 
 		moveVector = self.getMoveVector(s, e)
 		if moveVector[0] != 0:
@@ -177,11 +191,11 @@ class engine:
 				temp[0] = newSqr[0]
 				temp[1] = newSqr[1]
 				path.append(temp)
-		print(path)
+		# print(path)
 		return path
 
 	def isClearPath(self, board, p, startSqr, endSqr):
-		print("checking if " + p.__str__() + " has a clear path to " + str(endSqr))
+		# print("checking if " + p.__str__() + " has a clear path to " + str(endSqr))
 		s = copy.deepcopy(startSqr);
 		e = copy.deepcopy(endSqr);
 		if p.kind == "K" or p.kind == "N":
@@ -190,7 +204,90 @@ class engine:
 			path = self.getPath(s, e)
 			for x in range(len(path)):
 				if board.isEmptySquare(path[x]) == False:
-					print(p.__str__() + " does not have a clear path to " + str(endSqr) + ". Conflict at " + str(path[x]))
+					# print(p.__str__() + " does not have a clear path to " + str(endSqr) + ". Conflict at " + str(path[x]))
 					return False
-			print(p.__str__() + " has a clear path to " + str(endSqr))
+			# print(p.__str__() + " has a clear path to " + str(endSqr))
 			return True
+
+	def getDevelopment(self, board):
+		"""counts total number of squares threatened by each army; does not double count"""
+		armies = ['b', 'w']
+		index = 0
+		for c in armies:
+			pcs = board.getPieces(c)
+			temp = 0
+			for x in range(8):
+				for y in range(8):
+					for p in pcs:
+						if self.isThreateningSqr(board, p, [x,y]):
+							temp+=1
+							break
+			armies[index] = temp
+			index+=1
+		return armies
+
+	def getThreatened(self, board):
+		"""counts the total number of pieces threatened in each army"""
+		armies = ['b', 'w']
+		index = 0
+		for c in armies:
+			pcs = board.getPieces(c)
+			temp = 0
+			for p in pcs:
+				if self.isThreatened(board, p):
+					temp-=1
+			armies[index] = temp
+			index-=1
+		return armies
+
+	def getAggression(self, board):
+		"""counts the total number of pieces each piece in each army threatens"""
+		armies = ['b', 'w']
+		index = 0
+		for c in armies:
+			pcs = board.getPieces(c)
+			qcs = board.getPieces(self.getOppositeColor(c))
+			temp = 0
+			for p in pcs:
+				for q in qcs:
+					if self.isThreatening(board, p, q):
+						temp+=1
+			armies[index] = temp
+			index+=1
+		return armies
+	
+	def getDefense(self, board):
+		"""counts the total number of pieces each piece in each army defends"""
+		armies = ['b', 'w']
+		index = 0
+		for c in armies:
+			pcs = board.getPieces(c)
+			qcs = board.getPieces(c)
+			temp = 0
+			for p in pcs:
+				for q in qcs:
+					if self.isThreateningSqr(board, q, p.sqr) == True:
+						temp+=1
+			armies[index] = temp
+			index+=1
+		return armies
+
+	def getEnPrise(self, board):
+		"""counts the total number of pieces that are en prise in each army"""
+		armies = ['b', 'w']
+		index = 0
+		for c in armies:
+			pcs = board.getPieces(c)
+			temp = 0
+			for p in pcs:
+				if self.isThreatened(board, p):
+					defended = False
+					for q in pcs:
+						if self.isThreateningSqr(board, q, p.sqr) == True:
+							defended = True
+							break
+					if defended == False:
+						temp-=1
+			armies[index] = temp
+			index-=1
+		return armies

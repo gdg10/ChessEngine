@@ -24,10 +24,10 @@ class Board:
 				for x in range(len(self.pcsList)):
 					if self.pcsList[x].sqr == sqr:
 						return self.pcsList[x]
-				print("Piece DNE")
+				#print("Piece DNE")
 				return None;
 		else:
-			print("Not a square")
+			#print("Not a square")
 			return None
 
 	def getPieceByKind(self, kind, color):
@@ -60,7 +60,7 @@ class Board:
 	
 	def movePiece(self, engine, startSqr, endSqr):
 		p = self.getPiece(startSqr)
-		print("moving " + p.__str__() + " to " + str(endSqr))
+		#print("moving " + p.__str__() + " to " + str(endSqr))
 		q = self.getPiece(endSqr)
 
 		if engine.isLegalMove(self, startSqr, endSqr):
@@ -77,7 +77,7 @@ class Board:
 		return p
 	
 	def removePiece(self, p):
-		print("Capturing " + p.__str__())
+		#print("Capturing " + p.__str__())
 		self.pcsList.remove(p)
 
 	def setupDefault(self):
@@ -145,3 +145,13 @@ class Board:
 			if x != 7:
 				boardStr = boardStr + '\n'
 		return boardStr
+
+	def getMaterialSums(self):
+		bMat = 0
+		wMat = 0
+		for p in self.pcsList:
+			if p.color == "w":
+				wMat+=p.value
+			else:
+				bMat+=p.value
+		return [bMat, wMat]
