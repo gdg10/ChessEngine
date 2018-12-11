@@ -5,19 +5,6 @@ and how they may be moved
 
 import math, copy, board
 
-whiteKingImage = 'img/whiteKing.png'
-whiteQueenImage = 'img/whiteQueen.png'
-whiteRookImage = 'img/whiteRook.png'
-whiteBishopImage = 'img/whiteBishop.png'
-whiteKnightImage = 'img/whiteKnight.png'
-whitePawnImage = 'img/whitePawn.png'
-blackKingImage = 'img/blackking.png'
-blackQueenImage = 'img/blackQueen.png'
-blackRookImage = 'img/blackRook.png'
-blackBishopImage = 'img/blackBishop.png' 
-blackKnightImage = 'img/blackKnight.png'
-blackPawnImage = 'img/blackPawn.png'
-
 # Move render to gui class to save space in engine calculations
 
 class Piece:
@@ -25,6 +12,7 @@ class Piece:
 		self.render = None
 		self.color = color
 		self.sqr = None
+		self.kind = ""
 
 	def __str__(self):
 		return self.color + self.kind + str(self.sqr)
@@ -48,14 +36,15 @@ class Piece:
 		
 	def setSqr(self, sqr):
 		self.sqr = sqr
+		
+	def getKey(self):
+		return self.color + self.kind
 
 class King(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
 		self.kind = 'K'
 		self.value = 0
-		self.whiteImg = whiteKingImage
-		self.blackImg = blackKingImage
 
 	def isLegalMove(self, startSqr,endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
@@ -73,8 +62,6 @@ class Queen(Piece):
 		Piece.__init__(self, color)
 		self.kind = 'Q'
 		self.value = 9
-		self.whiteImg = whiteQueenImage
-		self.blackImg = blackQueenImage
 	
 	def isLegalMove(self, startSqr, endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
@@ -95,10 +82,8 @@ class Queen(Piece):
 class Pawn(Piece):
 	def __init__(self, color):
 		Piece.__init__(self, color)
-		self.kind = 'p'
+		self.kind = 'P'
 		self.value = 1
-		self.whiteImg = whitePawnImage
-		self.blackImg = blackPawnImage
 		self.neverMoved = True
 	
 	def correctDirection(self, mV):
@@ -133,8 +118,6 @@ class Rook(Piece):
 		Piece.__init__(self, color)
 		self.kind = 'R'
 		self.value = 5
-		self.whiteImg = whiteRookImage
-		self.blackImg = blackRookImage
 
 	def isLegalMove(self, startSqr, endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
@@ -154,8 +137,6 @@ class Knight(Piece):
 		Piece.__init__(self, color)
 		self.kind = 'N'
 		self.value = 3
-		self.whiteImg = whiteKnightImage
-		self.blackImg = blackKnightImage
 		
 	def isLegalMove(self, startSqr,endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
@@ -173,8 +154,6 @@ class Bishop(Piece):
 		Piece.__init__(self, color)
 		self.kind = 'B'
 		self.value = 3
-		self.whiteImg = whiteBishopImage
-		self.blackImg = blackBishopImage
 
 	def isLegalMove(self, startSqr, endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")

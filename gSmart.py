@@ -4,8 +4,10 @@ TODO
 Chess A.I.
 
 """
+import os, pygame, board, math, engine, sys, gSmart
+from pygame.locals import *
 
-import engine, board, piece, numpy, copy
+import engine, board, piece, copy
 
 class gSmart:
 
@@ -33,7 +35,7 @@ class gSmart:
 				bestPosition = ps
 				bestMove = m
 		print("The best move is: " + str(bestMove))
-		return bestMove
+		return bestMove[1]
 
 	def getAllNextMoves(self, b):
 		pcs = b.getPieces(b.turn)
@@ -44,7 +46,8 @@ class gSmart:
 					futureB = copy.deepcopy(b)
 					success = futureB.movePiece(self.e, p.sqr, [x,y])
 					if success == True:
-						nextMoves.append([futureB, [p.sqr], [x,y]])
+						m = [p.sqr, [x,y]]
+						nextMoves.append([futureB, m])
 		# print(nextMoves)
 		return nextMoves
 

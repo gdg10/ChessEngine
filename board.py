@@ -72,7 +72,7 @@ class Board:
 			return False
 
 	def setPiece(self, sqr, p):
-		print("Setting piece " + str(sqr))
+		#print("Setting piece " + str(sqr))
 		p.sqr = sqr;
 		return p
 	
