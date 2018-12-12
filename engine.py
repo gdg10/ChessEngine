@@ -8,19 +8,14 @@ import board, piece, copy
 
 class engine:
 
-	def isCheckmate(self, board):
+	def isCheckmate(self, board, k):
 		
-		# determine which army may be in check or checkmate
-		checkColor = self.getOppositeColor(board.turn)	
-
-		# if the king is not in check, its not in checkmate
-		k = board.getPieceByKind("K", checkColor)
 		if self.isCheck(board, k) == False:
 			# print("no checkmate")
 			return False		
 		else:
 			# if the king is in check, determine if it can get out of it
-			pcs = board.getPieces(checkColor)
+			pcs = board.getPieces(k.color)
 			for p in pcs:
 				# print("checking if " + p.__str__() + " can move to prevent checkmate")
 				for x in range(8):							
@@ -30,10 +25,10 @@ class engine:
 						b = copy.deepcopy(board)					# copy the board
 						b.nextTurn()
 						success = b.movePiece(self, p.sqr, sqr)		# attempt move
-						k = b.getPieceByKind("K", checkColor)
+						k2 = b.getPieceByKind("K", k.color)
 						if success:
 							# print("legal move...")
-							if self.isCheck(b, k) == False:
+							if self.isCheck(b, k2) == False:
 								# print("moving " + p.__str__() + " to " + str(sqr) + " can prevent checkmate")
 								return False
 							#else:
@@ -273,7 +268,7 @@ class engine:
 		return armies
 
 	def getEnPrise(self, board):
-		"""counts the total number of pieces that are en prise in each army"""
+		"""totals the value of the pieces that are en prise in each army"""
 		armies = ['b', 'w']
 		index = 0
 		for c in armies:
@@ -287,7 +282,45 @@ class engine:
 							defended = True
 							break
 					if defended == False:
-						temp-=1
+						temp-=p.value
 			armies[index] = temp
 			index-=1
+		return armies
+	
+	def getCheck(self, board):
+		armies = ['b', 'w']
+		index = 0
+		pcs = [None, None]
+		i=0
+		
+		for c in armies:
+			pcs[i] = board.getPieceByKind("K", c)
+			i+=1
+			
+		for p in pcs:
+			if self.isCheck(board, p):
+				armies[index] = 1
+			else:
+				armies[index] = 0	
+			index+=1
+		
+		return armies
+	
+	def getCheckmate(self, board):
+		armies = ['b', 'w']
+		index = 0
+		pcs = [None, None]
+		i=0
+		
+		for c in armies:
+			pcs[i] = board.getPieceByKind("K", c)
+			i+=1
+			
+		for p in pcs:
+			if self.isCheckmate(board, p):
+				armies[index] = 1
+			else:
+				armies[index] = 0	
+			index+=1
+		
 		return armies

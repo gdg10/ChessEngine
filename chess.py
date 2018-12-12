@@ -15,7 +15,7 @@ class chess:
 		self.e = engine.engine()
 		self.g = gSmart.gSmart()
 		self.gui = gui.gui()
-		self.gameMode = 2
+		self.gameMode = 3
 	
 		self.b.setupDefault()
 		#self.b.setupCheckmate()	
@@ -30,8 +30,8 @@ class chess:
 			self.humanVhuman()
 		elif self.gameMode == 2:
 			self.humanVgSmart()
-		#elif gameMode == 3:
-		#	return
+		elif self.gameMode == 3:
+			self.gSmartVgSmart()
 		#else:
 		#	return
 
@@ -75,7 +75,16 @@ class chess:
 						self.makeComputerMove();
 						self.b.nextTurn()
 						print("nextTurn")
-
+	
+	def gSmartVgSmart(self):
+		win = False
+			
+		while win == False:
+			self.makeComputerMove();
+			win = self.checkForWin()
+			self.b.nextTurn()
+			print("nextTurn")
+			
 	def updateGUI(self):
 		self.gui.push(self.b)
 		
@@ -90,10 +99,14 @@ class chess:
 		print(move)
 		success = self.b.movePiece(self.e, move[0], move[1])
 		if success:
+			print("-----------------------------------")
+			self.g.evaluatePosition(self.b)
 			self.updateGUI()
 			
 	def checkForWin(self):
-		if self.e.isCheckmate(self.b):
+		color = self.e.getOppositeColor(self.b.turn)
+		k = self.b.getPieceByKind("K", color)
+		if self.e.isCheckmate(self.b, k):
 			print(self.b.turn + " wins")
 			return True
 		else:

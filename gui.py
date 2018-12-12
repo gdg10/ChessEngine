@@ -11,7 +11,7 @@ class gui:
 
 	def __init__(self):
 		
-		self.gameSize = 500						#dictates size of window
+		self.gameSize = 350						#dictates size of window
 		self.boardPath = 'img/chessboard.jpg' 	#path to image of chessboard used for background
 		self.boardRender = None
 		self.screen = None
@@ -52,8 +52,8 @@ class gui:
 		self.createBoardRender()
 		
 		#fill in the render dictionary
-		print(kys)
-		print(kys[2])
+		#print(kys)
+		#print(kys[2])
 		for k in kys:
 			self.renderDict[k] = self.createPieceRender(self.pathDict[k])
 		
