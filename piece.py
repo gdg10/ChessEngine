@@ -45,6 +45,7 @@ class King(Piece):
 		Piece.__init__(self, color)
 		self.kind = 'K'
 		self.value = 0
+		self.neverMoved = True
 
 	def isLegalMove(self, startSqr,endSqr, capture):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
@@ -52,6 +53,7 @@ class King(Piece):
 		distance = self.getDistance(moveVector)
 		if(distance == 1 or distance == math.sqrt(2)):
 			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
+			self.neverMoved = False
 			return True
 		else:
 			#print(self.__str__() + " to " + str(endSqr) + " is not a legal move")
@@ -99,10 +101,10 @@ class Pawn(Piece):
 		#print("Checking if " + self.__str__() + " to " + str(endSqr) + " is a legal move")
 		mV = self.getMoveVector(startSqr, endSqr)
 		d = self.getDistance(mV)
-		if(d == 1 and self.correctDirection(mV) == True):	#Pawn may move 1 square "forward"
+		if(d == 1 and self.correctDirection(mV) == True and capture == False):	#Pawn may move 1 square "forward"
 			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			return True
-		elif(d == 2 and self.correctDirection(mV) == True and self.neverMoved == True): #Pawn may move 2 squares "forward" if first turn
+		elif(d == 2 and self.correctDirection(mV) == True and self.neverMoved == True and capture == False): #Pawn may move 2 squares "forward" if first turn
 			#print(self.__str__() + " to " + str(endSqr) + " is a legal move")
 			self.neverMoved = False
 			return True
