@@ -1,11 +1,11 @@
 """ 
-contains the pieces of a the chess set 
+piece.py
+
+contains the pieces of the chess set 
 and how they may be moved
 """
 
 import math, copy, board
-
-# Move render to gui class to save space in engine calculations
 
 class Piece:
 	def __init__(self, color):

@@ -15,16 +15,30 @@ class chess:
 		self.e = engine.engine()
 		self.g = gSmart.gSmart()
 		self.gui = gui.gui()
-		self.gameMode = 3
-	
-		self.b.setupDefault()
-		#self.b.setupCheckmate()	
-		self.gui.push(self.b)
+		
+		self.gameMode = 2
+		#self.b.setupDefault()
+		#self.b.setupCheckmate()
+		self.b.setupCastle()		
 		
 		self.main()
 		
 	def main(self):
 		
+		#display splash screen until a key is pressed
+		loop = True
+		while loop:
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					return
+				if event.type == KEYUP:
+					loop = False
+					break
+					
+		#push render of setup board
+		self.gui.push(self.b)
+		
+		#start game play
 		print("main")
 		if self.gameMode == 1:
 			self.humanVhuman()
@@ -32,8 +46,6 @@ class chess:
 			self.humanVgSmart()
 		elif self.gameMode == 3:
 			self.gSmartVgSmart()
-		#else:
-		#	return
 
 	def humanVhuman(self):
 		startSqr = [0,0]

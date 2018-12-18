@@ -1,7 +1,9 @@
-# an arrangement of pieces 
-# and methods to access or change that arrangement 
-# backend is a list
+""" 
+board.py
 
+an arrangement of pieces (list based)
+and methods to access or mutate that arrangement 
+"""
 import math, copy, piece, engine
 
 class Board:
@@ -116,7 +118,35 @@ class Board:
 		self.pcsList.append(self.setPiece([5,6], piece.Pawn("w")))
 		self.pcsList.append(self.setPiece([6,6], piece.Pawn("w")))
 		self.pcsList.append(self.setPiece([7,6], piece.Pawn("w")))
-
+		
+	def setupCastle(self):
+		#setup the black army
+		self.pcsList.append(self.setPiece([0,0], piece.Rook("b")))	
+		self.pcsList.append(self.setPiece([4,0], piece.King("b")))
+		self.pcsList.append(self.setPiece([7,0], piece.Rook("b")))
+		self.pcsList.append(self.setPiece([0,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([1,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([2,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([3,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([4,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([5,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([6,1], piece.Pawn("b")))
+		self.pcsList.append(self.setPiece([7,1], piece.Pawn("b")))
+		
+		#setup the white army
+		self.pcsList.append(self.setPiece([0,7], piece.Rook("w")))	
+		self.pcsList.append(self.setPiece([3,7], piece.Queen("w")))
+		self.pcsList.append(self.setPiece([4,7], piece.King("w")))
+		self.pcsList.append(self.setPiece([7,7], piece.Rook("w")))
+		self.pcsList.append(self.setPiece([0,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([1,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([2,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([3,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([4,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([5,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([6,6], piece.Pawn("w")))
+		self.pcsList.append(self.setPiece([7,6], piece.Pawn("w")))
+		
 	def setupCheckmate(self):
 		#setup the black army
 		self.pcsList.append(self.setPiece([0,0], piece.Rook("b")))	

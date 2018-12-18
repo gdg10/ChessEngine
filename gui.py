@@ -6,13 +6,16 @@
 #import everything
 import os, pygame, board, math, engine, sys, gSmart, piece
 from pygame.locals import *
+import time
 
 class gui:
 
 	def __init__(self):
 		
-		self.gameSize = 350						#dictates size of window
+		self.gameSize = 500						#dictates size of window
 		self.boardPath = 'img/chessboard.jpg' 	#path to image of chessboard used for background
+		self.splashPath = 'img/splashScreen.png'
+		self.splashRender = None
 		self.boardRender = None
 		self.screen = None
 		kys = ["wK","wQ","wR","wB","wN","wP","bK","bQ","bR","bB","bN","bP" ]
@@ -45,17 +48,26 @@ class gui:
 		"bN" : None,
 		"bP" : None }
 		
+
 		pygame.init()
 		#self.screen = pygame.display.set_mode((self.gameSize, self.gameSize), RESIZABLE)
 		self.screen = pygame.display.set_mode((self.gameSize, self.gameSize))
 		pygame.display.set_caption("gSmart Chess")
-		self.createBoardRender()
 		
-		#fill in the render dictionary
-		#print(kys)
-		#print(kys[2])
+		
+		r = pygame.image.load(self.splashPath).convert()
+		self.splashRender = pygame.transform.scale(r, (self.gameSize, self.gameSize))
+		self.screen.blit(self.splashRender, (0, 0))
+		
+		
+		pygame.display.update()
+		#pygame.time.wait(2000)
+		
+		#fill in the render dictionaries
+		self.createBoardRender()
 		for k in kys:
 			self.renderDict[k] = self.createPieceRender(self.pathDict[k])
+		
 		
 	def push(self, board):
 		# push the staged render to screen 
@@ -79,7 +91,7 @@ class gui:
 			
 	def createPieceRender(self, path):
 		r = pygame.image.load(path).convert_alpha() #render
-		r = pygame.transform.scale(r, (int(self.gameSize/16), int(2*self.gameSize/16))) #scale
+		r = pygame.transform.scale(r, (int(.92*self.gameSize/16), int(2*self.gameSize/16))) #scale
 		return r
 	
 	def createBoardRender(self):

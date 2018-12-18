@@ -1,4 +1,6 @@
 """ 
+engine.py
+
 Inforcer of the rules:
 	-Determines if a move is legal
 	-Determines check, and checkmate
@@ -37,12 +39,6 @@ class engine:
 							#print("illegal move")
 			# print("King is in checkmate")
 			return True
-
-	#def getPosTree(n): 
-		#n is number of levels
-
-	#def getBoard ()
-		# 
 
 	def isCheck(self, board, p):
 		# you're in check if your king is threatened
