@@ -23,20 +23,27 @@ class gSmart:
 		self.chkmtW = 1000
 
 	def getNextMove(self, b):
-		pcs = b.getPieces(b.turn)
-		bestMove = []
-		bestPosition = -200;
-		moves = self.getAllNextMoves(b)
-		for m in moves:
-			pos = self.evaluatePosition(m[0])
-			if b.turn == 'b':
-				ps = pos[0]
-			else:
-				ps = pos[1]
-			if ps > bestPosition:
-				bestPosition = ps
-				bestMove = m
-		print("The best move is: " + str(bestMove))
+	
+		#gt = buildGameTree()
+		#move = miniMax(gt)
+		
+		#replace below with minimax algo with alpha beta pruning
+		
+		#pcs = b.getPieces(b.turn)
+		#bestMove = []
+		#bestPosition = -200;
+		#moves = self.getAllNextMoves(b)
+		#for m in moves:
+		#	pos = self.evaluatePosition(m[0])
+		#	if b.turn == 'b':
+		#		ps = pos[0]
+		#	else:
+		#		ps = pos[1]
+		#	if ps > bestPosition:
+		#		bestPosition = ps
+		#		bestMove = m
+		#print("The best move is: " + str(bestMove))
+		
 		return bestMove[1]
 
 	def getAllNextMoves(self, b):
@@ -104,4 +111,8 @@ class gSmart:
 		# print("Weighted Position: " + str(weightedPosition))
 
 		#print("Weighted Posistion: " + str(weightedPosition))
-		return weightedPosition
+		
+		totalWeight = -1*weightedPosition[0] + weightedPosition[1]
+		print("total weight: " + totalWeight)
+		
+		return totalWeight
